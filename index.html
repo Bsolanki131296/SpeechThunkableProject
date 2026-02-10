@@ -1,0 +1,26 @@
+<button onclick="startRecognition()">Start</button>
+<p id="transcript"></p>
+
+<script>
+const waterKeywords = ["water","save","saving","tap","shower","bucket","liters"];
+
+function startRecognition(){
+  const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+  recognition.lang = "en-IN";
+
+  recognition.onresult = (event)=>{
+    const text = event.results[0][0].transcript.toLowerCase();
+    document.getElementById("transcript").innerText = text;
+
+    let detected = waterKeywords.some(word => text.includes(word));
+
+    // Send data back to Thunkable
+    window.location =
+      "thunkable://water?text=" +
+      encodeURIComponent(text) +
+      "&detected=" + detected;
+  };
+
+  recognition.start();
+}
+</script>
